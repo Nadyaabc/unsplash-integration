@@ -1,6 +1,6 @@
 :root {
-  --primary: #4a69bd;
-  --secondary: #3c6382;
+  --primary: #9f7be0;
+  --secondary: #7951c2;
   --light: #f5f7fa;
   --dark: #333;
   --gray: #777;
@@ -40,11 +40,6 @@ header {
 h1 {
   font-size: 2.5rem;
   margin-bottom: 10px;
-}
-
-.subtitle {
-  font-weight: 300;
-  opacity: 0.9;
 }
 
 .search-container {
@@ -190,7 +185,7 @@ button {
     transform: rotate(360deg);
   }
 }
-/* Add to your existing CSS */
+
 .pagination-container {
   display: flex;
   justify-content: center;
@@ -219,7 +214,7 @@ button {
 }
 
 .pagination-btn.active {
-  background-color: var(--primary);
+  background-color: var(--secondary);
   color: white;
   border-color: var(--primary);
 }
@@ -478,7 +473,7 @@ button {
 
 .view-btn {
   background: rgba(255,255,255,0.9);
-  color: var(--primary);
+  color: var(--secondary);
   border: none;
   padding: 10px 20px;
   border-radius: 50px;
@@ -497,7 +492,6 @@ button {
   box-shadow: 0 6px 20px rgba(0,0,0,0.15);
 }
 
-/* Модальное окно - улучшения */
 .modal-content {
   max-width: 90%;
   max-height: 90%;
@@ -565,7 +559,7 @@ button {
   .random-card:first-child .random-img {
       height: 300px;
   }
-  
+
   .random-card:not(:first-child) .random-img {
       height: 200px;
   }

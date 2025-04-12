@@ -42,7 +42,7 @@ async function fetchPhotos(page = 1, query = '', random = false) {
     try {
         showLoading();
         clearPhotos();
-        
+
         if (random) {
             const data = await fetchRandomPhoto();
             displayPhotos(Array.isArray(data) ? data : [data]);
@@ -51,8 +51,8 @@ async function fetchPhotos(page = 1, query = '', random = false) {
 
         state.currentQuery = query;
         state.currentPage = page;
-        
-        const url = query 
+
+        const url = query
             ? `${UNSPLASH_API_URL}/search/photos?query=${query}&per_page=${PHOTOS_PER_PAGE}&page=${page}&client_id=${UNSPLASH_ACCESS_KEY}`
             : `${UNSPLASH_API_URL}/photos?per_page=${PHOTOS_PER_PAGE}&page=${page}&order_by=popular&client_id=${UNSPLASH_ACCESS_KEY}`;
 
@@ -66,7 +66,7 @@ async function fetchPhotos(page = 1, query = '', random = false) {
             state.totalPages = page + 1;
             displayPhotos(data);
         }
-        
+
         createPagination();
     } catch (error) {
         showError('Error loading photos. Please try again later.');
@@ -91,11 +91,11 @@ function displayPhotos(photos) {
     }
 
     elements.photoContainer.innerHTML = '';
-    
+
     photos.forEach((photo, index) => {
         const photoCard = createPhotoCard(photo, index);
         elements.photoContainer.appendChild(photoCard);
-        
+
         // Анимация появления с задержкой
         setTimeout(() => {
             photoCard.style.opacity = '1';
@@ -110,20 +110,20 @@ function createPhotoCard(photo, index) {
     card.style.opacity = '0';
     card.style.transform = 'translateY(20px)';
     card.style.transition = `all 0.5s ease ${index * 0.1}s`;
-    
+
     // Для случайных фото делаем особый дизайн
     const isRandomCard = state.isRandom;
-    const imgHeight = isRandomCard 
-        ? (index === 0 ? '400px' : '250px') 
+    const imgHeight = isRandomCard
+        ? (index === 0 ? '400px' : '250px')
         : '300px';
-    
+
     const userProfileUrl = photo.user?.links?.html || 'https://unsplash.com';
-    
+
     card.innerHTML = `
         <div class="photo-img-container ${isRandomCard ? 'random-img-container' : ''}">
-            <img src="${photo.urls?.regular}" 
-                 alt="${photo.alt_description || 'Unsplash photo'}" 
-                 class="photo-img ${isRandomCard ? 'random-img' : ''}" 
+            <img src="${photo.urls?.regular}"
+                 alt="${photo.alt_description || 'Unsplash photo'}"
+                 class="photo-img ${isRandomCard ? 'random-img' : ''}"
                  style="height: ${imgHeight}"
                  loading="lazy">
             <div class="photo-overlay">
@@ -132,12 +132,12 @@ function createPhotoCard(photo, index) {
                     ${isRandomCard ? 'Explore' : 'View'}
                 </button>
             </div>
-            ${isRandomCard ? `<div class="random-badge">Рандомное</div>` : ''}
+            ${isRandomCard ? `<div class="random-badge">Random</div>` : ''}
         </div>
         <div class="photo-details">
             <a href="${userProfileUrl}" target="_blank" class="photo-author">
-                <img src="${photo.user?.profile_image?.small || 'https://via.placeholder.com/32'}" 
-                     alt="${photo.user?.name || 'Unknown author'}" 
+                <img src="${photo.user?.profile_image?.small || 'https://via.placeholder.com/32'}"
+                     alt="${photo.user?.name || 'Unknown author'}"
                      class="author-avatar">
                 <span class="author-name">${photo.user?.name || 'Unknown'}</span>
             </a>
@@ -147,23 +147,23 @@ function createPhotoCard(photo, index) {
             </div>
         </div>
     `;
-    
+
     card.querySelector('.photo-img').addEventListener('click', () => openPhotoModal(photo));
     card.querySelector('.view-btn').addEventListener('click', () => openPhotoModal(photo));
-    
+
     return card;
 }
 
 function openPhotoModal(photo) {
     elements.modalImg.src = photo.urls?.regular;
     elements.modalImg.alt = photo.alt_description || 'Unsplash photo';
-    
+
     const userProfileUrl = photo.user?.links?.html || 'https://unsplash.com';
-    
+
     elements.modalAuthor.innerHTML = `
         <a href="${userProfileUrl}" target="_blank" class="modal-author-link">
-            <img src="${photo.user?.profile_image?.medium || 'https://via.placeholder.com/64'}" 
-                 alt="${photo.user?.name || 'Unknown author'}" 
+            <img src="${photo.user?.profile_image?.medium || 'https://via.placeholder.com/64'}"
+                 alt="${photo.user?.name || 'Unknown author'}"
                  class="modal-author-avatar">
             <span>${photo.user?.name || 'Unknown'}</span>
         </a>
@@ -171,7 +171,7 @@ function openPhotoModal(photo) {
             <i class="fas fa-download"></i> Download
         </a>
     `;
-    
+
     elements.modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
@@ -275,7 +275,7 @@ function showError(message) {
             <button class="try-again-btn">Try Again</button>
         </div>
     `;
-    
+
     elements.photoContainer.querySelector('.try-again-btn').addEventListener('click', () => {
         fetchPhotos(state.currentPage, state.currentQuery, state.isRandom);
     });
