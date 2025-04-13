@@ -69,15 +69,15 @@ async function fetchPhotos(page = 1, query = '', random = false) {
 
         createPagination();
     } catch (error) {
-        showError('Error loading photos. Please try again later.');
-        console.error('Error:', error);
+        showError('Ошибка загрузки фото. Пожалуйста, попробуйте позже');
+        console.error('Ошибка:', error);
     } finally {
         hideLoading();
     }
 }
 
 async function fetchRandomPhoto() {
-    // Для случайных фото берем сразу 3 изображения для более интересного отображения
+    // Для случайных фото берем сразу 4 изображения для более интересного отображения
     const url = `${UNSPLASH_API_URL}/photos/random?count=4&client_id=${UNSPLASH_ACCESS_KEY}`;
     const response = await fetch(url);
     return await response.json();
@@ -86,7 +86,7 @@ async function fetchRandomPhoto() {
 // Отображение фотографий
 function displayPhotos(photos) {
     if (!photos?.length) {
-        showError('No photos found. Try a different search term.');
+        showError('Фото не найдены. Попробуйте изменить запрос.');
         return;
     }
 
@@ -122,28 +122,28 @@ function createPhotoCard(photo, index) {
     card.innerHTML = `
         <div class="photo-img-container ${isRandomCard ? 'random-img-container' : ''}">
             <img src="${photo.urls?.regular}"
-                 alt="${photo.alt_description || 'Unsplash photo'}"
+                 alt="${photo.alt_description || 'Фото Unsplash'}"
                  class="photo-img ${isRandomCard ? 'random-img' : ''}"
                  style="height: ${imgHeight}"
                  loading="lazy">
             <div class="photo-overlay">
                 <button class="view-btn">
                     <i class="fas fa-expand"></i>
-                    ${isRandomCard ? 'Explore' : 'View'}
+                    ${isRandomCard ? 'Изучить' : 'Просмотреть'}
                 </button>
             </div>
-            ${isRandomCard ? `<div class="random-badge">Random</div>` : ''}
+            ${isRandomCard ? `<div class="random-badge">Случайное</div>` : ''}
         </div>
         <div class="photo-details">
             <a href="${userProfileUrl}" target="_blank" class="photo-author">
                 <img src="${photo.user?.profile_image?.small || 'https://via.placeholder.com/32'}"
-                     alt="${photo.user?.name || 'Unknown author'}"
+                     alt="${photo.user?.name || 'Неизвестный автор'}"
                      class="author-avatar">
-                <span class="author-name">${photo.user?.name || 'Unknown'}</span>
+                <span class="author-name">${photo.user?.name || 'Неизвестно'}</span>
             </a>
             <div class="photo-stats">
                 <span><i class="fas fa-heart"></i> ${photo.likes || 0}</span>
-                <span><i class="fas fa-calendar-alt"></i> ${photo.created_at ? new Date(photo.created_at).toLocaleDateString() : 'Unknown date'}</span>
+                <span><i class="fas fa-calendar-alt"></i> ${photo.created_at ? new Date(photo.created_at).toLocaleDateString() : 'Неизвестная дата'}</span>
             </div>
         </div>
     `;
@@ -156,21 +156,28 @@ function createPhotoCard(photo, index) {
 
 function openPhotoModal(photo) {
     elements.modalImg.src = photo.urls?.regular;
-    elements.modalImg.alt = photo.alt_description || 'Unsplash photo';
+    elements.modalImg.alt = photo.alt_description || 'Unsplash фото';
 
     const userProfileUrl = photo.user?.links?.html || 'https://unsplash.com';
-
     elements.modalAuthor.innerHTML = `
-        <a href="${userProfileUrl}" target="_blank" class="modal-author-link">
-            <img src="${photo.user?.profile_image?.medium || 'https://via.placeholder.com/64'}"
-                 alt="${photo.user?.name || 'Unknown author'}"
-                 class="modal-author-avatar">
-            <span>${photo.user?.name || 'Unknown'}</span>
-        </a>
-        <a href="${photo.links?.download}?force=true" class="download-btn" download target="_blank">
-            <i class="fas fa-download"></i> Download
-        </a>
-    `;
+    <a href="${userProfileUrl}" target="_blank" class="modal-author-link">
+        <img src="${photo.user?.profile_image?.medium || 'https://via.placeholder.com/64'}"
+             alt="${photo.user?.name || 'Неизвестный автор'}"
+             class="modal-author-avatar">
+        <span class="modal-author-name">${photo.user?.name || 'Неизвестно'}</span>
+    </a>
+    <button class="download-btn copy-btn">
+        <i class="fas fa-copy"></i> Копировать ссылку
+    </button>
+`;
+
+// Добавляем обработчик копирования
+document.querySelector('.copy-btn')?.addEventListener('click', () => {
+    navigator.clipboard.writeText(photo.links?.html || photo.urls?.regular)
+        .then(() => alert('Ссылка скопирована!'))
+        .catch(err => console.error('Ошибка копирования:', err));
+});
+    
 
     elements.modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
@@ -272,7 +279,7 @@ function showError(message) {
         <div class="empty-state">
             <i class="fas fa-image empty-icon"></i>
             <h3>${message}</h3>
-            <button class="try-again-btn">Try Again</button>
+            <button class="try-again-btn">Попробуйте ещё раз</button>
         </div>
     `;
 

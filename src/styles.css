@@ -320,6 +320,9 @@ button {
     border-radius: 50%;
     margin-right: 10px;
 }
+.modal-author-name{
+  color:black;
+}
 
 /* Оверлей для фото */
 .photo-img-container {
