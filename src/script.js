@@ -58,12 +58,16 @@ async function fetchPhotos(page = 1, query = "", random = false) {
 
     if (query) {
       state.totalPages = data.total_pages;
-      displayPhotos(data.results);
+      if (data.results.length === 0) {
+        showError("Фото не найдены. Попробуйте изменить запрос.");
+        clearPagination(); // Clear pagination if no photos are found
+      } else {
+        displayPhotos(data.results);
+      }
     } else {
       state.totalPages = page + 1;
       displayPhotos(data);
     }
-
     createPagination();
   } catch (error) {
     showError("Ошибка загрузки фото. Пожалуйста, попробуйте позже");
@@ -72,7 +76,9 @@ async function fetchPhotos(page = 1, query = "", random = false) {
     hideLoading();
   }
 }
-
+function clearPagination() {
+  elements.paginationContainer.innerHTML = "";
+}
 async function fetchRandomPhoto() {
   const url = `${UNSPLASH_API_URL}/photos/random?count=4&client_id=${UNSPLASH_ACCESS_KEY}`;
   const response = await fetch(url);
@@ -309,6 +315,7 @@ function showError(message) {
       fetchPhotos(state.currentPage, state.currentQuery, state.isRandom);
     });
 }*/
+
 function showError(message) {
   elements.photoContainer.innerHTML = `
         <div class="empty-state">
@@ -332,6 +339,11 @@ function showError(message) {
         // Если поле пустое - показываем ошибку
         showError("Пожалуйста, введите поисковый запрос");
       }
+    });
+     elements.photoContainer
+    .querySelector(".try-again-btn")
+    .addEventListener("click", () => {
+      fetchPhotos(state.currentPage, state.currentQuery, state.isRandom);
     });
 }
 
@@ -376,6 +388,7 @@ function handleSearch() {
   const query = elements.searchInput.value.trim();
   if (!query) {
     // Можно показать сообщение об ошибке
+    clearPagination();
     showError("Пожалуйста, введите поисковый запрос");
     return;
   }
