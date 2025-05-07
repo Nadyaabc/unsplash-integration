@@ -293,7 +293,7 @@ function clearPhotos() {
   elements.photoContainer.innerHTML = "";
   elements.paginationContainer.innerHTML = "";
 }
-
+/*
 function showError(message) {
   elements.photoContainer.innerHTML = `
         <div class="empty-state">
@@ -307,6 +307,31 @@ function showError(message) {
     .querySelector(".try-again-btn")
     .addEventListener("click", () => {
       fetchPhotos(state.currentPage, state.currentQuery, state.isRandom);
+    });
+}*/
+function showError(message) {
+  elements.photoContainer.innerHTML = `
+        <div class="empty-state">
+            <i class="fas fa-image empty-icon"></i>
+            <h3>${message}</h3>
+            <button class="try-again-btn">Попробуйте ещё раз</button>
+        </div>
+    `;
+
+  elements.photoContainer
+    .querySelector(".try-again-btn")
+    .addEventListener("click", () => {
+      // Получаем текущее значение из поля ввода
+      const newQuery = elements.searchInput.value.trim();
+      
+      if (newQuery) {
+        // Если есть новый запрос - выполняем поиск с ним
+        state.isRandom = false;
+        fetchPhotos(1, newQuery);
+      } else {
+        // Если поле пустое - показываем ошибку
+        showError("Пожалуйста, введите поисковый запрос");
+      }
     });
 }
 
